@@ -37,7 +37,7 @@ neighbors:
 # Route-maps are added first and will ignore prefix-lists configured
 # This first entry can be used as a template to show what options are available
 #   - neighbor: 1.1.1.5
-#     remote_as: 2034
+#     remote_as: 65000
 #     group: Name of peer group.
 #     update_source: Optional
 #     description: Test
