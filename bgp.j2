@@ -1,0 +1,65 @@
+!
+! BGP for address-family ipv4 template
+!
+router bgp {{ as }}
+{% if router_id %}
+ bgp router-id {{ router_id }}
+{% endif %}
+{% for peers in neighbors %}
+ {% if peers.group %}
+ neighbor {{ peers.neighbor }} peer-group {{ peers.group }}
+ {% endif %}
+ neighbor {{ peers.neighbor }} remote-as {{ peers.remote_as }}
+ {% if peers.description %}
+ neighbor {{ peers.neighbor }} description {{ peers.description}}
+ {% endif %}
+ {% if peers.update_source %}
+ neighbor {{ peers.neighbor }} update-source {{ peers.update_source }}
+ {% endif %}
+{% endfor %}
+ !
+ address-family ipv4
+  {% for network in networks_adv if network.net != None %}
+  network {{ network.net }} mask {{ network.mask }}
+  {% endfor %}
+  {% for network in aggregate_networks if network.aggregate != None %}
+  aggregate-address {{ network.aggregate }} {{ network.mask }} summary-only
+  {% endfor %}
+  {% for network in no_networks if network.net != None %}
+  no network {{ network.net }} mask {{ network.mask }}
+  {% endfor %}
+  {% for network in no_aggregate_networks if network.aggregate != None %}
+  no aggregate-address {{ network.aggregate }} {{ network.mask }} summary-only
+  {% endfor %}
+  {% for peers in neighbors %}
+  {% if not peers.group %}
+  {% if peers.neighbor_reflector == True %}
+  neighbor {{ peers.neighbor}} route-reflector-client
+  {% endif %}
+  {% if peers.modify_next_hop == True %}
+  neighbor {{ peers.neighbor }} next-hop-self
+  {% elif peers.modify_next_hop_all == True %}
+  neighbor {{ peers.neighbor }} next-hop-self all
+  {% endif %}
+  {% if peers.route_map_out %}
+  neighbor {{ peers.neighbor }} route-map {{ peers.route_map_out }} out
+  {% elif peers.prefix_list_out %}
+  neighbor {{ peers.neighbor }} prefix-list {{ peers.prefix_list_out }} out
+  {% endif %}
+  {% if peers.route_map_in %}
+  neighbor {{ peers.neighbor }} route-map {{ peers.route_map_in }} in
+  {% elif peers.prefix_list_in %}
+  neighbor {{ peers.neighbor }} prefix-list {{ peers.prefix_list_in }} in
+  {% endif %}
+  {% if peers.no_route_map_out %}
+  no neighbor {{ peers.neighbor }} route-map {{ peers.no_route_map_out }} out
+  {% elif peers.no_prefix_list_out %}
+  no neighbor {{ peers.neighbor }} prefix-list {{ peers.no_prefix_list_out }} out
+  {% endif %}
+  {% if peers.no_route_map_in %}
+  no neighbor {{ peers.neighbor }} route-map {{ peers.no_route_map_in }} in
+  {% elif peers.no_prefix_list_in %}
+  no neighbor {{ peers.neighbor }} prefix-list {{ peers.no_prefix_list_in }} in
+  {% endif %}
+  {% endif %}
+  {% endfor %}

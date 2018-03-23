@@ -1,0 +1,54 @@
+# To be used for pushing BGP neighbor additions/subtractions. Formatting and spelling is important.
+# This is for VRF context based configurations
+
+as: xxxx
+# Required
+
+router_id: 1.1.1.1
+# Optional, can leave blank
+
+vrf: testing
+# Required
+
+networks_adv:
+# These are optional and are additive
+    - net:
+      mask:
+
+aggregate_networks:
+# These are optional and are additivie
+    - aggregate:
+      mask:
+
+no_networks:
+# These are optional. This will remove prefix advertisements
+    - net:
+      mask:
+
+no_aggregate_networks:
+# These are optional and will remove summary advertisements
+    - aggregate:
+      mask:
+
+neighbors:
+# Can include multiple neighbors
+# Required are address and remote-as. Rests are optional and can be left blank.
+# Adding a neighbor to a peer-group will ignore other options
+# Route-maps are added first and will ignore prefix-lists configured
+# This first entry can be used as a template to show what options are available
+#   - neighbor: 1.1.1.5
+#     remote_as: 2034
+#     group: Name of peer group.
+#     update_source: Optional
+#     description: Test
+#     neighbor_reflector: True or leave blank
+#     modify_next_hop: True or leave blank
+#     modify_next_hop_all: True or leave blank
+#     route_map_out:
+#     route_map_in:
+#     prefix_list_out:
+#     prefix_list_in:
+#     no_route_map_out:
+#     no_route_map_in:
+#     no_prefix_list_out:
+#     no_prefix_list_in:

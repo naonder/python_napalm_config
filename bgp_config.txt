@@ -1,0 +1,10 @@
+!
+! BGP for address-family ipv4 template created from napalm_bgp.py
+!
+router bgp 2034
+ bgp router-id 1.1.1.1
+ neighbor 1.1.1.5 peer-group test_group
+ neighbor 1.1.1.5 remote-as 65000
+ neighbor 1.1.1.5 description Test
+ !
+ address-family ipv4
